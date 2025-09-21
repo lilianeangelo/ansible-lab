@@ -1,0 +1,48 @@
+---
+# roles/tasks/main.yml
+- name: "Task 1: Install Python and Git on Debian-based systems"
+  ansible.builtin.apt:
+    name:
+      - python3
+      - python3-pip
+      - git
+    state: present
+    update_cache: yes
+  when: ansible_os_family == 'Debian'
+
+- name: "Task 1 (RedHat): Install Python and Git on RedHat-based systems"
+  ansible.builtin.yum:
+    name:
+      - python3
+      - python3-pip
+      - git
+    state: present
+    update_cache: yes
+  when: ansible_os_family == 'RedHat'
+
+- name: "Task 2: Clone application from Git repository"
+  ansible.builtin.git:
+    repo: "{{ git_repo_url }}"
+    dest: "{{ app_path }}"
+    version: "{{ app_version }}"
+    force: yes
+
+- name: "Task 3: Install Python dependencies"
+  ansible.builtin.pip:
+    requirements: "{{ app_path }}/requirements.txt"
+    executable: pip3
+
+- name: "Task 4: Ensure application is running with a systemd service"
+  ansible.builtin.template:
+    src: simple-app.service.j2
+    dest: /etc/systemd/system/simple-app.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart simple-app
+
+- name: "Task 5: Enable and start the systemd service"
+  ansible.builtin.systemd:
+    name: simple-app
+    state: started
+    enabled: yes

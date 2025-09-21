@@ -1,0 +1,12 @@
+[Unit]
+Description=Simple Web Application
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory={{ app_path }}
+ExecStart=/usr/bin/python3 {{ app_path }}/app.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
