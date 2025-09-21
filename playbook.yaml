@@ -3,5 +3,9 @@
   hosts: localhost
   gather_facts: yes
   become: yes
+  vars:
+    git_repo_url: "https://github.com/lilianeangelo/simple-app.git"
+    app_path: "/opt/simple-app"
+    app_version: "main"
   roles:
     - webapp_setup
